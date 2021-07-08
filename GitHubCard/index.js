@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
@@ -12,10 +14,24 @@
     Skip to STEP 3.
 */
 
+// // step 1 and 2 combined 
+// axios.get('https://api.github.com/users/fernando817mm')
+//   .then(res => console.log(res.data))
+//   .catch(err => console.log(err))
+//   .finally(() => console.log('done'));
+
 /*
   STEP 4: Pass the data received from Github into your function,
     and append the returned markup to the DOM as a child of .cards
 */
+
+// function builder(username){
+//   axios.get(`https://api.github.com/users/${username}`)
+//     .then(res => document.querySelector('.cards').append(res.data.name))
+//     .catch(err => console.log(err));
+// }
+
+// builder('fernando817mm');
 
 /*
   STEP 5: Now that you have your own card getting added to the DOM, either
@@ -28,7 +44,10 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+// followersArray.forEach(e => {
+//   const user = builder(e);
+//   return user;
+// })
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -49,6 +68,71 @@ const followersArray = [];
       </div>
     </div>
 */
+
+function cardConstructor({ avatar_url, name, login, location, html_url, followers, following, bio }){
+  const card = document.createElement('div');
+  const img = document.createElement('img');
+  const infoDiv = document.createElement('div');
+  const h3 = document.createElement('h3');
+  const username = document.createElement('p');
+  const pLocation = document.createElement('p');
+  const addressContainer = document.createElement('p');
+  const address = document.createElement('a');
+  const followersP = document.createElement('p');
+  const followingP = document.createElement('p');
+  const bioP = document.createElement('p');
+
+  card.classList.add('card');
+  img.src = avatar_url;
+  infoDiv.classList.add('card-info');
+  h3.classList.add('name');
+  username.classList.add('username');
+  address.href = html_url;
+
+  h3.textContent = name;
+  username.textContent = login;
+  pLocation.textContent = `Location: ${location}`;
+  addressContainer.textContent = 'Profile: ';
+  address.textContent = html_url;
+  followersP.textContent = `Followers: ${followers}`;
+  followingP.textContent = `Following: ${following}`;
+  bioP.textContent = `Bio: ${bio}`;
+
+  address.setAttribute('target', '_blank');
+
+  card.append(img);
+  card.append(infoDiv);
+  infoDiv.append(h3);
+  infoDiv.append(username);
+  infoDiv.append(pLocation);
+  infoDiv.append(addressContainer);
+  addressContainer.append(address);
+  infoDiv.append(followersP);
+  infoDiv.append(followingP);
+  infoDiv.append(bioP);
+
+  return card;
+}
+
+const followersArray = [
+  'tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell',
+  'Jie-chelchel',
+  'fernando817mm',
+  'aliyahlina'
+];
+
+followersArray.forEach(e => {
+  axios.get(`https://api.github.com/users/${e}`)
+  .then(res => {
+    const userCard = cardConstructor(res.data);
+    document.querySelector('.cards').append(userCard);
+  })
+  .catch(err => console.log(err));
+})
 
 /*
   List of LS Instructors Github username's:
